@@ -1,0 +1,15 @@
+Augmentor==0.2.12
+colorama==0.4.6
+numpy==1.24.4
+opencv-python==4.10.0.84
+pandas==2.0.3
+pillow==10.4.0
+PySide6==6.6.3.1
+PySide6-Addons==6.6.3.1
+PySide6-Essentials==6.6.3.1
+python-dateutil==2.9.0.post0
+pytz==2024.2
+shiboken6==6.6.3.1
+six==1.16.0
+tqdm==4.66.5
+tzdata==2024.2

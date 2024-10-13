@@ -11,19 +11,26 @@ from DataAugmentorWidget import DataAugmentorWidget
 class TabWidget(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setWindowTitle('Data Transformer')
+        self.setWindowTitle('CVHelper')
         self.setGeometry(100, 100, 500, 400)
-
+        self.setStyleSheet("background-color: #e6f0dc;")
+        # Create a QLabel for the header and set alignment to center
+        self.header_label = QtWidgets.QLabel("CVHelper", self)
+        self.header_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.header_label.setStyleSheet("font-size: 25px; font-weight: bold; color:#55883b;")
         # Create a QTabWidget instance
         self.tab_widget = QtWidgets.QTabWidget()
        
         # to highlight color on tab selected
         self.tab_widget.tabBar().setStyleSheet("""
         QTabBar::tab {
+        
             color: black;  /* Default tab title color */
+           
         }
         QTabBar::tab:selected {
-            color: green;    /* Selected tab title color */
+            
+            color: #3b8848;    /* Selected tab title color */
         }
     """)
         self.tab_widget.setStyleSheet("font-size: 20px;")
@@ -42,6 +49,7 @@ class TabWidget(QtWidgets.QWidget):
 
         # VideoToFrames Tab
         main_layout = QtWidgets.QVBoxLayout()
+        main_layout.addWidget(self.header_label)
         main_layout.addWidget(self.tab_widget)
         self.setLayout(main_layout)
 

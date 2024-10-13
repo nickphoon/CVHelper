@@ -125,9 +125,10 @@ class SortImageWidget(QtWidgets.QWidget):
                 
                 self.log_output.append(f"Images in {folder} have been sorted.")
                 QtWidgets.QApplication.processEvents()  # Log sorted message
+                self.log_output.append("All folders have been processed.")  # Final message
             else:
                 self.log_output.append(f"No annotations file found in {folder}")
                 QtWidgets.QApplication.processEvents()
 
-        self.log_output.append("All folders have been processed.")  # Final message
+        
         QtWidgets.QApplication.processEvents()

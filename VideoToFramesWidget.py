@@ -1,6 +1,7 @@
+import sys
 import os
 import cv2
-from PySide6 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore, QtGui
 from pathlib import Path
 
 class VideoToFramesWidget(QtWidgets.QWidget):
@@ -9,6 +10,12 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         
         self.folder_clicked = False
         self.video_clicked = False
+        self.total_frames = 0  # To store the total frames of the selected video
+        self.frame_start = 0
+        self.frame_end = 0
+        self.fps = 1  # Default fps (to be updated when the video is loaded)
+        self.video_capture = None  # To store the video capture object
+
         main_layout = QtWidgets.QVBoxLayout()
         self.setLayout(main_layout)
 
@@ -64,6 +71,41 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         folder_layout.addLayout(folder_path_layout)
         main_layout.addLayout(folder_layout)
 
+        # Video Display Area (QLabel)
+        self.video_label = QtWidgets.QLabel()
+        self.video_label.setFixedSize(400, 300)  # Set a fixed size for the video display
+        self.video_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.video_label.setStyleSheet("background-color: black;")  # Background color for the video display
+        main_layout.addWidget(self.video_label)
+
+        # Slider for Start Frame
+        self.start_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
+        self.start_slider.setEnabled(False)  # Disabled initially
+        self.start_slider.setMinimum(0)
+        self.start_slider.setMaximum(100)  # Placeholder value, updated when video is loaded
+        self.start_slider.setStyleSheet("font-size: 16px;")
+        self.start_slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
+        self.start_slider.setTickInterval(10)
+        self.start_slider.valueChanged.connect(self.update_start_slider_value)
+        main_layout.addWidget(self.start_slider)
+
+        # Slider for End Frame
+        self.end_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
+        self.end_slider.setEnabled(False)  # Disabled initially
+        self.end_slider.setMinimum(0)
+        self.end_slider.setMaximum(100)  # Placeholder value, updated when video is loaded
+        self.end_slider.setStyleSheet("font-size: 16px;")
+        self.end_slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
+        self.end_slider.setTickInterval(10)
+        self.end_slider.valueChanged.connect(self.update_end_slider_value)
+        main_layout.addWidget(self.end_slider)
+
+        # Slider Label
+        self.slider_label = QtWidgets.QLabel("Use the sliders to select the portion of the video.")
+        self.slider_label.setStyleSheet("font-size: 16px;")
+        self.slider_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        main_layout.addWidget(self.slider_label)
+
         # Video to Frame button (disabled initially)
         self.sort_button = QtWidgets.QPushButton('Video to Frame')
         self.sort_button.setEnabled(False)
@@ -71,6 +113,10 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         self.sort_button.clicked.connect(self.process_all_videos_in_directory)
         main_layout.addWidget(self.sort_button)
 
+        # Progress bar
+        self.progress_bar = QtWidgets.QProgressBar(self)
+        self.progress_bar.setValue(0)
+        main_layout.addWidget(self.progress_bar)
         # Output log for progress display
         self.log_output = QtWidgets.QTextEdit()
         self.log_output.setReadOnly(True)
@@ -86,8 +132,70 @@ class VideoToFramesWidget(QtWidgets.QWidget):
             path = Path(selected_path)
             self.filename.setText(str(path))
             self.video_clicked = True
+            self.load_video_frames(selected_path)
             self.check_both_buttons_clicked()
-    
+
+    def load_video_frames(self, video_path):
+        self.video_capture = cv2.VideoCapture(video_path)
+        self.total_frames = int(self.video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.fps = self.video_capture.get(cv2.CAP_PROP_FPS)  # Get the frames per second
+
+        # Set slider maximum to total frames
+        self.start_slider.setEnabled(True)
+        self.end_slider.setEnabled(True)
+        self.start_slider.setMaximum(self.total_frames)
+        self.end_slider.setMaximum(self.total_frames)
+        self.end_slider.setValue(self.total_frames)  # Default is full video
+        self.update_slider_label()
+        self.show_frame(0)  # Show the first frame when the video is loaded
+
+    def update_start_slider_value(self, value):
+        self.frame_start = value
+        if self.frame_start > self.frame_end:
+            self.frame_start = self.frame_end
+            self.start_slider.setValue(self.frame_start)
+        self.update_slider_label()
+        self.show_frame(self.frame_start)
+
+    def update_end_slider_value(self, value):
+        self.frame_end = value
+        if self.frame_end < self.frame_start:
+            self.frame_end = self.frame_start
+            self.end_slider.setValue(self.frame_end)
+        self.update_slider_label()
+        self.show_frame(self.frame_end)
+
+    def update_slider_label(self):
+        # Convert frames to time in seconds
+        start_seconds = self.frame_start / self.fps
+        end_seconds = self.frame_end / self.fps
+        self.slider_label.setText(f"Processing video length from {start_seconds:.2f} to {end_seconds:.2f} seconds.")
+
+    def show_frame(self, frame_number):
+        """Display a specific frame in the QLabel"""
+        if self.video_capture is None:
+            return
+
+        # Set the video capture to the desired frame
+        self.video_capture.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
+        success, frame = self.video_capture.read()
+
+        if success:
+            # Convert the frame to RGB (since OpenCV uses BGR)
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+            # Convert the frame to a QImage to display in the QLabel
+            h, w, ch = frame_rgb.shape
+            bytes_per_line = ch * w
+            q_img = QtGui.QImage(frame_rgb.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
+
+            # Scale the image to fit the QLabel size
+            pixmap = QtGui.QPixmap.fromImage(q_img)
+            pixmap = pixmap.scaled(self.video_label.size(), QtCore.Qt.KeepAspectRatio)
+
+            # Update the QLabel with the pixmap
+            self.video_label.setPixmap(pixmap)
+
     def open_video_dialog(self):
         folder = QtWidgets.QFileDialog.getExistingDirectory(self, "Select a Folder to save images", "C:")
         if folder:
@@ -95,7 +203,7 @@ class VideoToFramesWidget(QtWidgets.QWidget):
             self.foldername.setText(str(path))
             self.folder_clicked = True
             self.check_both_buttons_clicked()
-    
+
     def check_both_buttons_clicked(self):
         if self.video_clicked and self.folder_clicked:
             self.sort_button.setEnabled(True)
@@ -106,26 +214,46 @@ class VideoToFramesWidget(QtWidgets.QWidget):
 
     def process_video(self, video_path, output_folder):
         video_name = os.path.splitext(os.path.basename(video_path))[0]
-        video_output_folder = os.path.join(output_folder, video_name)
+        # Convert frame start and end to seconds
+        start_seconds = int(self.frame_start // self.fps)
+        end_seconds = int(self.frame_end // self.fps)
+
+        # Create a subfolder using the video name and the start/end times
+        subfolder_name = f"{video_name}_{start_seconds}s-{end_seconds}s"
+        video_output_folder = os.path.join(output_folder, subfolder_name)
         self.create_folder(video_output_folder)
-        vidcap = cv2.VideoCapture(video_path)
-        total_frames = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
-        self.log_output.append(f"Processing video: {video_name} ({total_frames} frames)")
+
+        self.video_capture = cv2.VideoCapture(video_path)
+        total_frames = self.frame_end  # Use self.frame_end instead of total_frames
+        self.log_output.append(f"Processing video: {video_name} (up to frame {total_frames})")
+
+        # Set the progress bar range
+        self.progress_bar.setMaximum(total_frames - self.frame_start)
+        self.progress_bar.setValue(0)  # Reset the progress bar
         QtCore.QCoreApplication.processEvents()  # Update UI
-        
-        count = 0
-        while True:
-            success, image = vidcap.read()
+
+
+        if(self.frame_start!=0):
+            print_count = 0
+        else:
+            print_count = count
+        print_total_frames = self.frame_end - self.frame_start
+        count = self.frame_start
+        while count < total_frames:
+            success, image = self.video_capture.read()
             if not success:
                 break
-            frame_filename = f"{video_name}_frame{count}.jpg"
-            cv2.imwrite(os.path.join(video_output_folder, frame_filename), image)
+            if count >= self.frame_start:
+                frame_filename = f"{video_name}_frame{count}.jpg"
+                cv2.imwrite(os.path.join(video_output_folder, frame_filename), image)
+                self.log_output.append(f"Extracting frame {print_count}/{print_total_frames}")
+                self.progress_bar.setValue(count - self.frame_start + 1)
             count += 1
-            self.log_output.append(f"Extracting frame {count}/{total_frames}")
+            print_count+=1
             QtCore.QCoreApplication.processEvents()  # Ensure real-time updates
 
-        vidcap.release()
-        self.log_output.append(f"\n{count} images are extracted in {video_output_folder}.")
+        self.video_capture.release()
+        self.log_output.append(f"\n{self.frame_end-self.frame_start} images are extracted in {video_output_folder}.")
         QtCore.QCoreApplication.processEvents()  # Update UI
 
     def process_all_videos_in_directory(self):

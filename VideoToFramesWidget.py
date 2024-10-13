@@ -25,8 +25,8 @@ class VideoToFramesWidget(QtWidgets.QWidget):
             <b>Video Path:</b> The path to the input video file.<br><br>
             <b>Output Path:</b> The folder where the extracted frames will be saved.<br><br>
         """)
-        description.setMargin(10)
-        description.setContentsMargins(20, 0, 0, 5)
+        description.setMargin(5)
+        description.setContentsMargins(10, 0, 0, 5)
         description.setStyleSheet("font-size: 16px;")
         main_layout.addWidget(description)
         
@@ -52,7 +52,7 @@ class VideoToFramesWidget(QtWidgets.QWidget):
 
         # Output Folder Path layout
         folder_layout = QtWidgets.QHBoxLayout()
-        folder_layout.setSpacing(5)
+        # folder_layout.setSpacing(5)
         folder_browser_btn = QtWidgets.QPushButton('Select Image Folder')
         folder_browser_btn.setStyleSheet("font-size: 16px;")
         folder_browser_btn.clicked.connect(self.open_video_dialog)

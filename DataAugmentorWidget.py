@@ -223,11 +223,12 @@ class DataAugmentorWidget(QtWidgets.QWidget):
 
         # Apply augmentations
         augmented_img = self.apply_augmentation(self.current_image.copy(), rotation, flip_lr, flip_tb, zoom, shear)
-
+        # Convert the augmented image from BGR to RGB before displaying
+        augmented_img_rgb = cv2.cvtColor(augmented_img, cv2.COLOR_BGR2RGB)
         # Convert the augmented image to QPixmap and display it in the QLabel
-        height, width, channel = augmented_img.shape
+        height, width, channel = augmented_img_rgb.shape
         bytes_per_line = 3 * width
-        q_img = QtGui.QImage(augmented_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888)
+        q_img = QtGui.QImage(augmented_img_rgb.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888)
         pixmap = QtGui.QPixmap.fromImage(q_img)
         pixmap = pixmap.scaled(self.image_label.size(), QtCore.Qt.KeepAspectRatio)
         self.image_label.setPixmap(pixmap)

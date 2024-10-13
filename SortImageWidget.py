@@ -38,8 +38,8 @@ class SortImageWidget(QtWidgets.QWidget):
             _annotations.csv
     </pre>
 """)
-        description.setMargin(10)
-        description.setContentsMargins(20,0,0,5)
+        description.setMargin(5)
+        description.setContentsMargins(10,0,0,5)
         description.setStyleSheet("font-size: 16px;")
         main_layout.addWidget(description)
         # Folder path label and folder name aligned center-right

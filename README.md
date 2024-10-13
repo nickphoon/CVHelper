@@ -1,26 +1,4 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-
-
-
 
 <!-- PROJECT LOGO -->
 <br />
@@ -35,8 +13,6 @@
     A GUI for image augmentation, videos to frames and sorting images based on classes! 
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -62,12 +38,13 @@
   </ol>
 </details>
 
-
-
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
-This project is a simple GUI created using PyQT, OpenCV and NumPy for helping with Computer Vision Data processing. 
+
+This project is a simple GUI created using PyQT, OpenCV and NumPy for helping with Computer Vision Data processing.
 There are three tabs each with serving a different purpose:
+
 <ol>
 <li><a href="#video-to-frames">Video To Frames</a></li>
 <li><a href="#sort-images-by-class">Sort Images By Class</a></li>
@@ -75,23 +52,26 @@ There are three tabs each with serving a different purpose:
 </ol>
 
 <!-- VIDEO TO FRAMES -->
+
 ### Video To Frames
+
 Convert a video into individual frames and save them to a specified output path. A slider can be used to select the desired timeframe for images.
+
 - **Video Path**: Path to video
 - **Output Path**: Path to save images processed
 
-
 #### Demo
+
 <div align="center">
   <img src="gifs/VideoToFrames.gif" alt="Video To Frames Demo" width="400">
 </div>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- DATA AUGMENTATION -->
-## Data Augmentation 
+
+## Data Augmentation
+
 Augment data using the following augmentation techniques:
 
 - **Rotation**: Rotates the image by a specified degree.
@@ -109,23 +89,26 @@ Augment data using the following augmentation techniques:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- SORT IMAGES BY CLASS -->
+
 ## Sort Images By Class
 
-Sort Images that have their corresponding classes and filename in an <i><b>_annotations.csv<b></i> file in the selected folder.</br>
+Sort Images that have their corresponding classes and filename in an <i><b>\_annotations.csv<b></i> file in the selected folder.</br>
 <b>Folder Directory:</b></br>
-    <pre>
-    folder/
-        &nbsp;&nbsp;&nbsp;&nbsp;train/
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;001.jpg
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;002.jpg
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_annotations.csv
-        &nbsp;&nbsp;&nbsp;&nbsp;test/
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;003.jpg
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;004.jpg
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_annotations.csv
-    </pre>
+
+<pre>
+folder/
+&nbsp;&nbsp;&nbsp;&nbsp;train/
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;001.jpg
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;002.jpg
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\_annotations.csv
+&nbsp;&nbsp;&nbsp;&nbsp;test/
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;003.jpg
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;004.jpg
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\_annotations.csv
+</pre>
 
 #### Demo
+
 <div align="center">
   <img src="gifs/SortImagesByClass.gif" alt="Sort Images By Class Demo" width="400">
 </div>
@@ -134,74 +117,59 @@ Sort Images that have their corresponding classes and filename in an <i><b>_anno
 
 ### Built With
 
-* [![PyQt][PyQt.org]][PyQt-url]
-* [![OPENCV][OpenCV.org]][OpenCV-url]
-* [![NumPy][NumPy.org]][NumPy-url]
+- [![PyQt][PyQt.org]][PyQt-url]
+- [![OPENCV][OpenCV.org]][OpenCV-url]
+- [![NumPy][NumPy.org]][NumPy-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
-
 ### Prerequisites
+
 Python3++ installed
 
 ### Installation
 
-
 #### Local
+
 To get a local copy up and running follow these simple example steps.
 
 1. Clone this repository
 
 2. Create a virtual environment in the root folder <br/>
 
-    ```python -m venv venv ```
+   `python -m venv venv `
 
 3. Activate the environment <br/>
 
-    (Linux and macOS):
-    ``` source env/bin/activate ```</br>
+   (Linux and macOS):
+   `source env/bin/activate`</br>
 
-    (Windows): 
-    ``` env\Scripts\activate.bat ``` </br>
+   (Windows):
+   `env\Scripts\activate.bat` </br>
 
-4. Run ``` python app.py ``` to start the GUI application
-
-
-#### Docker
-1. Ensure Docker is installed in your system.
-2. Run ``` docker build --tag inf1002 ``` . in the root folder. This creates the docker image.
-3. Run docker ``` run -p 3000:3000 inf1002 ``` to run the project in a docker container.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
+4. Run `python app.py` to start the GUI application
 
 <!-- USAGE EXAMPLES -->
-## Usage
 
+## Usage
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 Nicholas Phoon - potatonicholas@gmail.com
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
 
+## Acknowledgments
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

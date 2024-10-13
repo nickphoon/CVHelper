@@ -33,7 +33,13 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         # Video Path layout
         file_layout = QtWidgets.QHBoxLayout()
         file_browser_btn = QtWidgets.QPushButton('Select Video')
-        file_browser_btn.setStyleSheet("font-size: 16px;")
+        file_browser_btn.setStyleSheet("""
+            font-size: 16px;
+            border: 2px solid black;  /* Add a solid black border */
+            padding: 5px;
+            background-color: #c1E899;  /* Optional: Add a background color */
+                                         
+        """)
         file_browser_btn.clicked.connect(self.open_file_dialog)
         file_layout.addWidget(file_browser_btn, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         
@@ -54,7 +60,14 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         folder_layout = QtWidgets.QHBoxLayout()
         # folder_layout.setSpacing(5)
         folder_browser_btn = QtWidgets.QPushButton('Select Image Folder')
-        folder_browser_btn.setStyleSheet("font-size: 16px;")
+        
+        folder_browser_btn.setStyleSheet("""
+            font-size: 16px;
+            border: 2px solid black;  /* Add a solid black border */
+            padding: 5px;
+            background-color: #c1E899;  /* Optional: Add a background color */
+                                         
+        """)
         folder_browser_btn.clicked.connect(self.open_video_dialog)
         folder_layout.addWidget(folder_browser_btn, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         
@@ -88,16 +101,73 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         self.start_slider.setTickInterval(10)
         self.start_slider.valueChanged.connect(self.update_start_slider_value)
         main_layout.addWidget(self.start_slider)
+        # Set custom style for the slider
+        self.start_slider.setStyleSheet("""
+    QSlider::groove:horizontal {
+        background: #d0d0d0;  /* Groove color */
+        height: 10px;
+        border-radius: 5px;
+    }
 
+    QSlider::handle:horizontal {
+        background: #55883b;  /* Handle color */
+        border: 1px solid #3b8848;
+        width: 20px;
+        height: 20px;
+        margin: -5px 0;  /* Center the handle vertically */
+        border-radius: 10px;
+    }
+
+    QSlider::sub-page:horizontal {
+        background: #a0c39a;  /* Color before the handle */
+    }
+
+    QSlider::add-page:horizontal {
+        background: #c0c0c0;  /* Color after the handle */
+    }
+
+    QSlider::tick:horizontal {
+        background: black;  /* Tick color */
+    }
+""")
         # Slider for End Frame
         self.end_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
         self.end_slider.setEnabled(False)  # Disabled initially
         self.end_slider.setMinimum(0)
         self.end_slider.setMaximum(100)  # Placeholder value, updated when video is loaded
         self.end_slider.setStyleSheet("font-size: 16px;")
+        self.end_slider.setStyleSheet("""
+    QSlider::groove:horizontal {
+        background: #d0d0d0;  /* Groove color */
+        height: 10px;
+        border-radius: 5px;
+    }
+
+    QSlider::handle:horizontal {
+        background: #88483b;  /* Handle color */
+        border: 1px solid #3b8848;
+        width: 20px;
+        height: 20px;
+        margin: -5px 0;
+        border-radius: 10px;
+    }
+
+    QSlider::sub-page:horizontal {
+        background: #a0c39a;  /* Color before the handle */
+    }
+
+    QSlider::add-page:horizontal {
+        background: #c0c0c0;  /* Color after the handle */
+    }
+
+    QSlider::tick:horizontal {
+        background: black;  /* Tick color */
+    }
+""")
         self.end_slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
         self.end_slider.setTickInterval(10)
         self.end_slider.valueChanged.connect(self.update_end_slider_value)
+
         main_layout.addWidget(self.end_slider)
 
         # Slider Label
@@ -109,7 +179,21 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         # Video to Frame button (disabled initially)
         self.sort_button = QtWidgets.QPushButton('Video to Frame')
         self.sort_button.setEnabled(False)
-        self.sort_button.setStyleSheet("font-size: 16px;")
+        self.sort_button.setStyleSheet("""
+    QPushButton {
+        font-size: 16px;
+        border: 2px solid black;
+        padding: 5px;
+        background-color: #c1E899;
+        color: black;
+    }
+
+    QPushButton:disabled {
+        background-color: #d3d3d3;  /* Greyed-out background */
+        color: #a0a0a0;  /* Greyed-out text */
+        border: 2px solid #a0a0a0;  /* Greyed-out border */
+    }
+""")
         self.sort_button.clicked.connect(self.process_all_videos_in_directory)
         main_layout.addWidget(self.sort_button)
 

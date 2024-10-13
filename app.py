@@ -13,13 +13,14 @@ class TabWidget(QtWidgets.QWidget):
         super().__init__(*args, **kwargs)
         self.setWindowTitle('CVHelper')
         self.setGeometry(100, 100, 500, 400)
-        self.setStyleSheet("background-color: #e6f0dc;")
+        self.setStyleSheet("background-color: #e6f0dc; color:black;")
         # Create a QLabel for the header and set alignment to center
         self.header_label = QtWidgets.QLabel("CVHelper", self)
         self.header_label.setAlignment(QtCore.Qt.AlignCenter)
         self.header_label.setStyleSheet("font-size: 25px; font-weight: bold; color:#55883b;")
         # Create a QTabWidget instance
         self.tab_widget = QtWidgets.QTabWidget()
+       
        
         # to highlight color on tab selected
         self.tab_widget.tabBar().setStyleSheet("""

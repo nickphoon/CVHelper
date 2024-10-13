@@ -60,7 +60,7 @@ class DataAugmentorWidget(QtWidgets.QWidget):
             else:
                 # Create layout with line edit and slider
                 slider_layout = QtWidgets.QHBoxLayout()
-
+                
                 # QLineEdit for number input
                 line_edit = QtWidgets.QLineEdit(self)
                 line_edit.setFixedWidth(50)
@@ -73,17 +73,45 @@ class DataAugmentorWidget(QtWidgets.QWidget):
                 # QSlider
                 slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
                 slider.setFixedWidth(150)
+                slider.setStyleSheet("""
+    QSlider::groove:horizontal {
+        background: #d0d0d0;  /* Groove color */
+        height: 10px;  /* Groove height */
+        border-radius: 5px;
+    }
 
+    QSlider::handle:horizontal {
+        background: #3b8848;  /* Handle color */
+        border: 1px solid #5c5c5c;  /* Border color */
+        width: 20px;  /* Handle width */
+        height: 20px;  /* Handle height */
+        margin: -5px 0;  /* Center the handle vertically */
+        border-radius: 10px;  /* Rounded handle */
+    }
+
+    QSlider::add-page:horizontal {
+        background: #a0a0a0;  /* Color for the part of the slider that is after the handle */
+    }
+
+    QSlider::sub-page:horizontal {
+        background: #55883b;  /* Color for the part of the slider that is before the handle */
+    }
+
+    QSlider::tick:horizontal {
+        background: black;  /* Color of the ticks */
+    }
+""")
                 if i == 0:  # Rotation slider (0-180)
                     slider.setRange(0, 180)
                 elif i == 3:  # Zoom slider (0-100, represents 0.0-1.0)
                     slider.setRange(0, 99)
                 elif i == 4:  # Shear slider (0-45)
                     slider.setRange(0, 45)
-
+                
                 slider.valueChanged.connect(self.sync_line_edit_with_slider(i))  # Sync line edit when slider changes
                 slider_layout.addWidget(line_edit)
                 slider_layout.addWidget(slider)
+                
 
                 # Add layout to form
                 form_layout.addRow(label, slider_layout)
@@ -107,6 +135,13 @@ class DataAugmentorWidget(QtWidgets.QWidget):
         param_layout.addLayout(folder_layout)
         folder_browser_btn = QtWidgets.QPushButton('Select Image Folder')
         folder_browser_btn.clicked.connect(self.open_folder_dialog)
+        folder_browser_btn.setStyleSheet("""
+            font-size: 16px;
+            border: 2px solid black;  /* Add a solid black border */
+            padding: 5px;
+            background-color: #c1E899;  
+                                         
+        """)
         folder_layout.addWidget(folder_browser_btn)
         self.foldername = QtWidgets.QLabel("")
         folder_layout.addWidget(self.foldername)
@@ -116,6 +151,13 @@ class DataAugmentorWidget(QtWidgets.QWidget):
         param_layout.addLayout(output_layout)
         output_browser_btn = QtWidgets.QPushButton('Select Output Folder')
         output_browser_btn.clicked.connect(self.open_output_folder_dialog)
+        output_browser_btn.setStyleSheet("""
+            font-size: 16px;
+            border: 2px solid black;  /* Add a solid black border */
+            padding: 5px;
+            background-color: #c1E899;  
+                                         
+        """)
         output_layout.addWidget(output_browser_btn)
         self.output_foldername = QtWidgets.QLabel("")
         output_layout.addWidget(self.output_foldername)
@@ -123,6 +165,21 @@ class DataAugmentorWidget(QtWidgets.QWidget):
         # Augment Images button
         self.augment_button = QtWidgets.QPushButton('Augment Images')
         self.augment_button.setEnabled(False)
+        self.augment_button.setStyleSheet("""
+    QPushButton {
+        font-size: 16px;
+        border: 2px solid black;
+        padding: 5px;
+        background-color: #c1E899;
+        color: black;
+    }
+
+    QPushButton:disabled {
+        background-color: #d3d3d3;  /* Greyed-out background */
+        color: #a0a0a0;  /* Greyed-out text */
+        border: 2px solid #a0a0a0;  /* Greyed-out border */
+    }
+""")
         self.augment_button.clicked.connect(self.process_augmentation_pipeline)
         param_layout.addWidget(self.augment_button)
 

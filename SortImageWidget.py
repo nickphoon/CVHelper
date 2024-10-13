@@ -21,6 +21,13 @@ class SortImageWidget(QtWidgets.QWidget):
         # Folder browser button aligned center-left
         folder_browser_btn = QtWidgets.QPushButton('Select Image Folder')
         folder_browser_btn.setStyleSheet("font-size: 16px;")
+        folder_browser_btn.setStyleSheet("""
+            font-size: 16px;
+            border: 2px solid black;  /* Add a solid black border */
+            padding: 5px;
+            background-color: #c1E899;  /* Optional: Add a background color */
+                                         
+        """)
         folder_layout.addWidget(folder_browser_btn, alignment=QtCore.Qt.AlignmentFlag.AlignLeft)
         
         description = QtWidgets.QLabel("""
@@ -56,11 +63,26 @@ class SortImageWidget(QtWidgets.QWidget):
         
         # Add the folder layout to the main layout
         main_layout.addLayout(folder_layout)
-
+        # Sort button
+        
         # Third button that is disabled initially
         self.sort_button = QtWidgets.QPushButton('Sort Images')
         self.sort_button.setEnabled(False)  # Disable by default
-        self.sort_button.setStyleSheet("font-size: 16px;")
+        self.sort_button.setStyleSheet("""
+    QPushButton {
+        font-size: 16px;
+        border: 2px solid black;
+        padding: 5px;
+        background-color: #c1E899;
+        color: black;
+    }
+
+    QPushButton:disabled {
+        background-color: #d3d3d3;  /* Greyed-out background */
+        color: #a0a0a0;  /* Greyed-out text */
+        border: 2px solid #a0a0a0;  /* Greyed-out border */
+    }
+""")
         self.sort_button.clicked.connect(self.sort_images_by_class)
         main_layout.addWidget(self.sort_button)
 

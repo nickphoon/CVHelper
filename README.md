@@ -144,18 +144,38 @@ Sort Images that have their corresponding classes and filename in an <i><b>_anno
 
 <!-- GETTING STARTED -->
 ## Getting Started
-To get a local copy up and running follow these simple example steps.
+
 
 ### Prerequisites
-
+Python3++ installed
 
 ### Installation
 
-#### Local
 
+#### Local
+To get a local copy up and running follow these simple example steps.
+
+1. Clone this repository
+
+2. Create a virtual environment in the root folder <br/>
+
+    ```python -m venv venv ```
+
+3. Activate the environment <br/>
+
+    (Linux and macOS):
+    ``` source env/bin/activate ```</br>
+
+    (Windows): 
+    ``` env\Scripts\activate.bat ``` </br>
+
+4. Run ``` python app.py ``` to start the GUI application
 
 
 #### Docker
+1. Ensure Docker is installed in your system.
+2. Run ``` docker build --tag inf1002 ``` . in the root folder. This creates the docker image.
+3. Run docker ``` run -p 3000:3000 inf1002 ``` to run the project in a docker container.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

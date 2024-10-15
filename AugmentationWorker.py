@@ -1,5 +1,6 @@
 import os
 import cv2
+from numpy import random
 import numpy as np
 from PySide6.QtCore import QThread, Signal
 
@@ -16,7 +17,7 @@ class AugmentationWorker(QThread):
         self.total_images = total_images
 
     def run(self):
-        rotation, flip_lr, flip_tb, zoom, shear = self.params
+        rotation, flip_lr, flip_tb, zoom, shear, probability = self.params
 
         # Counter for processed images
         processed_images = 0
@@ -25,7 +26,7 @@ class AugmentationWorker(QThread):
         for image_file in os.listdir(self.folder_path):
             if image_file.endswith(".jpg") or image_file.endswith(".png"):
                 img = cv2.imread(os.path.join(self.folder_path, image_file))
-                augmented_img = self.apply_augmentation(img, rotation, flip_lr, flip_tb, zoom, shear)
+                augmented_img = self.apply_augmentation(img, rotation, flip_lr, flip_tb, zoom, shear,probability)
 
                 # Save the augmented image
                 output_file = os.path.join(self.output_path, f"aug_{image_file}")
@@ -43,32 +44,43 @@ class AugmentationWorker(QThread):
         # Emit finished signal when done
         self.finished_signal.emit()
 
-    def apply_augmentation(self, img, rotation, flip_lr, flip_tb, zoom, shear):
+    def apply_augmentation(self, img, rotation, flip_lr, flip_tb, zoom, shear, probability):
         """Apply OpenCV-based augmentations."""
         height, width = img.shape[:2]
-
+    
+        choice = random.choice([0,rotation],p =[1-probability,probability]) #randomness from user parameter 
+        if choice:
         # 1. Rotation
-        M_rotate = cv2.getRotationMatrix2D((width / 2, height / 2), rotation, 1)
-        img = cv2.warpAffine(img, M_rotate, (width, height))
+            M_rotate = cv2.getRotationMatrix2D((width / 2, height / 2), rotation, 1)
+            img = cv2.warpAffine(img, M_rotate, (width, height))
 
-        # 2. Horizontal flip
+         # 2. Horizontal flip
         if flip_lr == "Yes":
-            img = cv2.flip(img, 1)
-
+                choice = random.choice([0,1],p =[1-probability,probability])
+                if choice:
+                    img = cv2.flip(img, 1)
         # 3. Vertical flip
         if flip_tb == "Yes":
-            img = cv2.flip(img, 0)
+                choice = random.choice([0,1],p =[1-probability,probability])
+                if choice:
+                    img = cv2.flip(img, 0)
 
+       
+        
         # 4. Zoom (crop and resize)
         zoom_factor = 1 - zoom  # Zoom factor (less than 1 for zooming in)
-        new_height, new_width = int(height * zoom_factor), int(width * zoom_factor)
-        crop_img = img[int((height - new_height) / 2):int((height + new_height) / 2),
-                       int((width - new_width) / 2):int((width + new_width) / 2)]
-        img = cv2.resize(crop_img, (width, height))
-
+        choice = random.choice([0,zoom_factor],p =[1-probability,probability])
+        if choice:
+            new_height, new_width = int(height * zoom_factor), int(width * zoom_factor)
+            crop_img = img[int((height - new_height) / 2):int((height + new_height) / 2),
+                        int((width - new_width) / 2):int((width + new_width) / 2)]
+            img = cv2.resize(crop_img, (width, height))
+        
         # 5. Shear (apply horizontal shear)
         shear_factor = shear / 100.0
-        M_shear = np.array([[1, shear_factor, 0], [0, 1, 0]], dtype=np.float32)
-        img = cv2.warpAffine(img, M_shear, (width, height))
+        choice = random.choice([0,zoom_factor],p =[1-probability,probability])
+        if choice:
+            M_shear = np.array([[1, shear_factor, 0], [0, 1, 0]], dtype=np.float32)
+            img = cv2.warpAffine(img, M_shear, (width, height))
 
         return img

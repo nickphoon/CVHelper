@@ -41,7 +41,8 @@ class DataAugmentorWidget(QtWidgets.QWidget):
             ("Flip Left-Right", "Flip image horizontally", "yes/no", None),
             ("Flip Top-Bottom", "Flip image vertically", "yes/no", None),
             ("Zoom (Range)", "Zoom range", "0.0-1.0", QtGui.QDoubleValidator(0.0, 1.0, 2)),
-            ("Shear (Degrees)", "Shear range", "0-45", QtGui.QIntValidator(0, 45))
+            ("Shear (Degrees)", "Shear range", "0-45", QtGui.QIntValidator(0, 45)),
+            ("Randomness Probability","Probability Range", "0.5-1.0",QtGui.QDoubleValidator(0.0, 1.0, 2))
         ]
 
         # Add the parameters with sliders, validators, and descriptions to the form layout
@@ -64,7 +65,10 @@ class DataAugmentorWidget(QtWidgets.QWidget):
                 # QLineEdit for number input
                 line_edit = QtWidgets.QLineEdit(self)
                 line_edit.setFixedWidth(50)
-                line_edit.setText("0")  # Set default value to 0
+                if(i ==5):
+                    line_edit.setText("0.5")
+                else:
+                    line_edit.setText("0")  # Set default value to 0
                 if validator:
                     line_edit.setValidator(validator) 
                      # Apply validator to ensure input is within range
@@ -107,6 +111,9 @@ class DataAugmentorWidget(QtWidgets.QWidget):
                     slider.setRange(0, 99)
                 elif i == 4:  # Shear slider (0-45)
                     slider.setRange(0, 45)
+                elif i == 5:
+                    slider.setRange(50,100)
+                    slider.setValue(50)
                 
                 slider.valueChanged.connect(self.sync_line_edit_with_slider(i))  # Sync line edit when slider changes
                 slider_layout.addWidget(line_edit)
@@ -213,6 +220,9 @@ class DataAugmentorWidget(QtWidgets.QWidget):
                 if index ==3:  # Zoom
                     value = float(self.param_inputs[index].text()) * 100  # Convert zoom (0.0-1.0) to (0-100) for slider
                     self.sliders[index - 2].setValue(int(value)) 
+                elif(index==5):
+                    value = float(self.param_inputs[index].text()) * 100  # Convert zoom (0.0-1.0) to (0-100) for slider
+                    self.sliders[index - 2].setValue(int(value))
                 elif(index == 4):# Adjust index for slider (since no slider for flip)
                     value = int(self.param_inputs[index].text())
                     self.sliders[index - 2].setValue(value)
@@ -227,6 +237,8 @@ class DataAugmentorWidget(QtWidgets.QWidget):
         def update_line_edit(value):
             if index == 3:  # Zoom
                 self.param_inputs[index].setText(f"{value / 100:.2f}")  # Convert slider (0-100) to float (0.0-1.0)
+            elif index ==5:
+                self.param_inputs[index].setText(f"{value / 100:.2f}")
             else:  # Rotation and Shear
                 self.param_inputs[index].setText(str(value))
             self.update_live_sample()  # Update the live sample image
@@ -274,6 +286,7 @@ class DataAugmentorWidget(QtWidgets.QWidget):
             flip_tb = self.param_inputs[2].currentText()
             zoom = float(self.param_inputs[3].text()) if self.param_inputs[3].text() else 0.0
             shear = int(self.param_inputs[4].text()) if self.param_inputs[4].text() else 0
+            
         except ValueError as e:
             self.append_log(f"Invalid input: {e}")
             return
@@ -330,18 +343,19 @@ class DataAugmentorWidget(QtWidgets.QWidget):
         self.progress_bar.setMaximum(total_images)
         """Start augmentation in a separate thread."""
         # Get current parameter values
-        rotation, flip_lr, flip_tb, zoom, shear = self.get_augmentation_parameters()
+        rotation, flip_lr, flip_tb, zoom, shear, probability = self.get_augmentation_parameters()
         # Check if all parameters are still at their default values
         if (rotation == 0 and
             flip_lr == "No" and
             flip_tb == "No" and
             zoom == 0.0 and
-            shear == 0):
+            shear == 0 and 
+            probability == 0.0):
             self.append_log("No augment parameters selected. Please tweak the parameters and try again.")
             return
        # Create and start the worker thread
         self.worker = AugmentationWorker(self.foldername.text(), self.output_foldername.text(),
-                                         (rotation, flip_lr, flip_tb, zoom, shear), total_images)
+                                         (rotation, flip_lr, flip_tb, zoom, shear, probability), total_images)
 
         # Connect signals to update the log and handle completion
         self.worker.log_signal.connect(self.append_log)
@@ -361,7 +375,8 @@ class DataAugmentorWidget(QtWidgets.QWidget):
         flip_tb = self.param_inputs[2].currentText()
         zoom = float(self.param_inputs[3].text())
         shear = int(self.param_inputs[4].text())
-        return rotation, flip_lr, flip_tb, zoom, shear
+        probability = float(self.param_inputs[5].text())
+        return rotation, flip_lr, flip_tb, zoom, shear, probability
 
     def append_log(self, message):
         """Append log message to the QTextEdit."""

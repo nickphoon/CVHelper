@@ -220,7 +220,10 @@ class VideoToFramesWidget(QtWidgets.QWidget):
             self.check_both_buttons_clicked()
 
     def load_video_frames(self, video_path):
+        if(self.video_capture):
+            self.video_capture.release()
         self.video_capture = cv2.VideoCapture(video_path)
+        
         self.total_frames = int(self.video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
         self.fps = self.video_capture.get(cv2.CAP_PROP_FPS)  # Get the frames per second
 
@@ -300,6 +303,7 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         video_name = os.path.splitext(os.path.basename(video_path))[0]
         # Convert frame start and end to seconds
         start_seconds = int(self.frame_start // self.fps)
+        
         end_seconds = int(self.frame_end // self.fps)
 
         # Create a subfolder using the video name and the start/end times
@@ -308,6 +312,9 @@ class VideoToFramesWidget(QtWidgets.QWidget):
         self.create_folder(video_output_folder)
 
         self.video_capture = cv2.VideoCapture(video_path)
+    
+        # Move the video capture to the start frame
+        self.video_capture.set(cv2.CAP_PROP_POS_FRAMES, self.frame_start)
         total_frames = self.frame_end  # Use self.frame_end instead of total_frames
         self.log_output.append(f"Processing video: {video_name} (up to frame {total_frames})")
 
@@ -323,6 +330,7 @@ class VideoToFramesWidget(QtWidgets.QWidget):
             print_count = count
         print_total_frames = self.frame_end - self.frame_start
         count = self.frame_start
+        print(count)
         while count < total_frames:
             success, image = self.video_capture.read()
             if not success:
@@ -336,9 +344,11 @@ class VideoToFramesWidget(QtWidgets.QWidget):
             print_count+=1
             QtCore.QCoreApplication.processEvents()  # Ensure real-time updates
 
-        self.video_capture.release()
+        # self.video_capture.release()
         self.log_output.append(f"\n{self.frame_end-self.frame_start} images are extracted in {video_output_folder}.")
         QtCore.QCoreApplication.processEvents()  # Update UI
+        self.show_frame(self.frame_start)
+        self.reset_state()
 
     def process_all_videos_in_directory(self):
         output_folder = self.foldername.text()
@@ -356,3 +366,14 @@ class VideoToFramesWidget(QtWidgets.QWidget):
                     self.process_video(video_path, output_folder)
         
         self.log_output.append("Finish extracting video to frames.")
+
+    def reset_state(self):
+        # self.show_frame(self.frame_start)
+         # Optionally, clear the progress bar if you want to start from scratch:
+        self.progress_bar.setValue(0)
+        
+        # Update the log output to indicate readiness for further frame extraction.
+        self.log_output.append("\nProcessing complete. You can adjust the sliders to extract another range of frames.")
+
+        # Disable the "Video to Frame" button until the user adjusts the sliders again.
+        # self.sort_button.setEnabled(False)

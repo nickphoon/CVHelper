@@ -60,6 +60,8 @@ Convert a video into individual frames and save them to a specified output path.
 - **Video Path**: Path to video
 - **Output Path**: Path to save images processed
 
+<a id="videoToFramesDemo"></a>
+
 #### Demo
 
 <div align="center">
@@ -79,6 +81,8 @@ Augment data using the following augmentation techniques:
 - **Vertical Flip**: Flips the image along the vertical axis.
 - **Zoom**: Zooms in or out of the image by a specified range.
 - **Shear**: Shears the image by a specified degree.
+
+<a id="dataAugmentorDemo"></a>
 
 #### Demo
 
@@ -106,6 +110,8 @@ folder/
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;004.jpg
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\_annotations.csv
 </pre>
+
+<a id="sortImagesByClassDemo"></a>
 
 #### Demo
 
@@ -135,6 +141,8 @@ Python3++ installed
 
 #### Local
 
+##### Manual
+
 To get a local copy up and running follow these simple example steps.
 
 1. Clone this repository
@@ -153,9 +161,29 @@ To get a local copy up and running follow these simple example steps.
 
 4. Run `python app.py` to start the GUI application
 
+##### Bash Scripts
+
+Alternatively, you can use the provided bash scripts for setup and running the application:
+
+1. Setup the environment using the <b><i>setup.sh</i></b> script
+   Run the following command or double click in your folder to automatically install dependencies and set up the environment </br>
+   `./setup.sh`
+
+2. Run the Application using the <b><i>run.sh</i></b> script
+   Once the setup is complete, start the application by running: </br>
+   `./run.sh`
+
 <!-- USAGE EXAMPLES -->
 
 ## Usage
+
+Refer to the demos for the following sections:
+
+1. <a href="#videoToFramesDemo">Video To Frame</a>
+
+2. <a href="#dataAugmentorDemo">Data Augmentation</a>
+
+3. <a href="#sortImagesByClassDemo">Sort Images By Class</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
